@@ -4,7 +4,7 @@ import '../styles/tasklist.scss'
 
 import { FiTrash, FiCheckSquare } from 'react-icons/fi'
 
-interface Task {
+type Task = {
   id: number;
   title: string;
   isComplete: boolean;
@@ -13,17 +13,49 @@ interface Task {
 export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    const rand = Math.random() * 500;
+
+    const newTask: Task = {
+      id: rand,
+      title: newTaskTitle,
+      isComplete: false
+    } 
+    if (newTaskTitle == '') {
+      alert("Favor inserir o titulo!")
+    } else {
+      setTasks([...tasks, newTask])
+    }
+    
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+
+    const item = tasks.find(element => element.id == id)
+
+    if (!item) {
+      alert ("Erro!")
+      return
+    }
+
+    item.isComplete = !item.isComplete
+    
+    const newList = tasks.filter(element => element.id != id)
+
+    setTasks([...newList, item])
+    
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+
+    const newList = tasks.filter(element => element.id != id)
+
+    setTasks(newList)
   }
 
   return (
@@ -34,7 +66,7 @@ export function TaskList() {
         <div className="input-group">
           <input 
             type="text" 
-            placeholder="Adicionar novo todo" 
+            placeholder="Adicionar novo to.do" 
             onChange={(e) => setNewTaskTitle(e.target.value)}
             value={newTaskTitle}
           />
